@@ -14,9 +14,9 @@ function App() {
 
               <Switch>
 
-                  <Route exact path='/' component={IssuerDashboard} /> 
+                  <Route exact path='/issuer' component={IssuerDashboard} /> 
 
-                  <Route path="/stat" component={InvestorDashboard}/>
+                  <Route path="/investor" component={InvestorDashboard}/>
               </Switch>
              
             </div>
