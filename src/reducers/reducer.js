@@ -1,16 +1,7 @@
 import { combineReducers } from "redux";
 
 
-const counter=(state=0, action)=>{
-    switch (action.type) {
-        case "INCREMENT":
-            return state += 1
-        default:
-            return state
-    }
-}
-
-const loadWeb3Reducer= (state={}, action) =>{
+const loadWeb3Reducer = (state={}, action) =>{
     switch (action.type) {
         case "LOAD_WEB3":
             return {...state, web3: action.payload}
@@ -23,6 +14,7 @@ const loadWeb3Reducer= (state={}, action) =>{
 
 
 export const allReducers = combineReducers({
-    counter,
+    
     loadWeb3Reducer
+
 })

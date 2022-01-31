@@ -11,8 +11,9 @@ export const loadWeb3Action=(web3)=>{
 
 // function to load connected address
 
-export const loadConnectedAddress=()=>{
+export const loadConnectedAddressAction=(address)=>{
     return ({
-        type: "LOAD_ADDRESS"
+        type: "LOAD_ADDRESS",
+        payload:address
     })
 }
