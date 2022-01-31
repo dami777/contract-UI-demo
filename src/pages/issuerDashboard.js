@@ -1,12 +1,31 @@
 import ConnectWallet from "../components/connectWallet"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
+import { useEffect } from "react"
+import { loadAbi } from "../functions"
 
 const IssuerDashboard = () =>{
+
+    const dispatch = useDispatch()
 
     const address = useSelector(
         state => get(state, 'loadWeb3Reducer.address', '')
       )
+
+      const web3 = useSelector(
+        state => get(state, 'loadWeb3Reducer.web3', {})
+      )
+
+      
+
+      useEffect(()=>{
+
+        loadAbi()
+
+
+      })
+
+
 
     return (
         <div>

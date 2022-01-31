@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action,  } from "./actions/action";
+import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction } from "./actions/action";
 
 export const loadWeb3=(dispatch)=>{
 
@@ -38,6 +38,8 @@ export const connectWallet=async(dispatch, web3)=>{
     }
 }
 
-const loadAbi=()=>{
-    
+export const loadAbi= (dispatch)=>{
+
+    const tokenJson = require("./contractAbi/ERC1400.json")
+    dispatch(loadAbiAction(tokenJson.abi))
 }
