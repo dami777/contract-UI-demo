@@ -17,3 +17,12 @@ export const loadConnectedAddressAction=(address)=>{
         payload:address
     })
 }
+
+// function to load abi
+
+export const loadAbiAction=(abi)=>{
+    return ({
+        type: "LOAD_TOKEN",
+        payload:abi
+    })
+}

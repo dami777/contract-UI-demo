@@ -12,9 +12,7 @@ function App() {
 
   const dispatch = useDispatch()
 
-  const web3 = useSelector(
-    state => get(state, 'loadWeb3Reducer.web3', {})
-  )
+  
 
   const loadData=async()=>{
 
