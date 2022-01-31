@@ -5,12 +5,24 @@ import InvestorDashboard from './pages/investorDashboard';
 import { BrowserRouter as Router, Route, Switch, BrowserRouter } from 'react-router-dom';
 import { loadWeb3 } from './functions';
 import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 function App() {
 
+  const dispatch = useDispatch()
+
+  const loadData=async()=>{
+
+    loadWeb3(dispatch)
+
+  }
+
   useEffect(()=>{
-    loadWeb3()
+
+    loadData()
+
   })
+
   return (
     <div className="App">
 
