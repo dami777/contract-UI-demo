@@ -4,7 +4,7 @@ export const counter=()=>{
     })
 }
 
-export const loadWeb3=(web3)=>{
+export const loadWeb3Action=(web3)=>{
     return ({
         type: "LOAD_WEB3",
         payload: web3
