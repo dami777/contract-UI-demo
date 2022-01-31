@@ -41,5 +41,6 @@ export const connectWallet=async(dispatch, web3)=>{
 export const loadAbi= (dispatch)=>{
 
     const tokenJson = require("./contractAbi/ERC1400.json")
-    dispatch(loadAbiAction(tokenJson.abi))
+    const abi = tokenJson.abi
+    dispatch(loadAbiAction(abi))
 }

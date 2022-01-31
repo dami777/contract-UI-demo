@@ -14,7 +14,7 @@ export const loadWeb3Action=(web3)=>{
 export const loadConnectedAddressAction=(address)=>{
     return ({
         type: "LOAD_ADDRESS",
-        payload:address
+        payload: address
     })
 }
 
@@ -22,7 +22,7 @@ export const loadConnectedAddressAction=(address)=>{
 
 export const loadAbiAction=(abi)=>{
     return ({
-        type: "LOAD_TOKEN",
-        payload:abi
+        type: "LOAD_ABI",
+        payload: abi
     })
 }

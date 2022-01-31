@@ -20,7 +20,7 @@ const IssuerDashboard = () =>{
 
       useEffect(()=>{
 
-        loadAbi()
+        loadAbi(dispatch)
 
 
       })
