@@ -1,5 +1,5 @@
 import { connectWallet } from "../functions"
-import { useDispatch, useSelector } from "react-redux"
+import { connect, useDispatch, useSelector } from "react-redux"
 import { get } from "lodash"
 
 
@@ -12,8 +12,8 @@ const ConnectWallet=()=>{
 
     console.log(ethereum)
 
-    const address = useSelector(
-        state => get(state, 'loadWeb3Reducer.address', '')
+    const connected = useSelector(
+        state => get(state, 'checkWalletConnectionReducer', false)
      )
 
     const web3 = useSelector(
@@ -26,11 +26,13 @@ const ConnectWallet=()=>{
         <div className="connect-cont">
 
             {
-                address.length > 0 ?  <button className="connect-button" onClick={async()=> await connectWallet(dispatch, web3)}>
+                connected ? <button>Connected</button> :
+                
+                                    <button className="connect-button" onClick={async()=> await connectWallet(dispatch, web3)}>
                                             Connect Wallet
-                                    </button> :
+                                    </button> 
 
-                                    <button onClick={()=>console.log(address)}>Connected</button>
+                                    
             }
 
 
