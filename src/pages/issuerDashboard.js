@@ -2,7 +2,7 @@ import ConnectWallet from "../components/connectWallet"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import { useEffect, useState } from "react"
-import {  issueToken } from "../functions"
+import {  issueToken, addToWhiteList } from "../functions"
 import { token } from "../helpers"
 
 const IssuerDashboard = () =>{
@@ -33,6 +33,7 @@ const IssuerDashboard = () =>{
 
     const [recipient, setRecipient] = useState('')
     const [amount, setAmount] = useState('')
+    const [whiteListAddress, setwhiteListAddress] = useState('')
 
 
     return (
@@ -62,8 +63,9 @@ const IssuerDashboard = () =>{
 
 
                     <div className="whitelist-cont">
-                        <input type="text" placeholder="address"/>
-                        <button className="whitelist-address">whitelist</button>
+                        <input type="text" placeholder="address" value={whiteListAddress} onChange={(e)=>setwhiteListAddress(e.target.value)}/>
+                        <button onClick={()=>addToWhiteList(contract, whiteListAddress)}
+                         className="whitelist-address">whitelist</button>
                     </div>
             </div>
             
