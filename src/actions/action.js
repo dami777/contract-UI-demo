@@ -74,3 +74,12 @@ export const loadContractAction=(contract)=>{
 
     })
 }
+
+
+// function to load balances of a connected address
+export const loadTotalBalance =(balance)=>{
+    return ({
+        type: "LOAD_BALANCE",
+        payload: balance
+    })
+}

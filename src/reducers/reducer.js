@@ -40,7 +40,7 @@ const loadTokenDataReducer=(state={}, action)=>{
     }
 }
 
-const loadBalances=(state={}, action)=>{
+const loadBalancesReducer=(state={}, action)=>{
     switch (action.type) {
         case "LOAD_BALANCE":
             return {...state, totalBalance: action.payload}
@@ -55,7 +55,7 @@ export const allReducers = combineReducers({
     loadWeb3Reducer,
     checkWalletConnectionReducer,
     loadTokenDataReducer,
-    loadBalances
+    loadBalancesReducer
     
 
 })
