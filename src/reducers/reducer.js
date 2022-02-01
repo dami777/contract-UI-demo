@@ -49,13 +49,22 @@ const loadBalancesReducer=(state={}, action)=>{
     }
 }
 
+const loadEventsReducer=(state={}, action)=>{
+    switch (action.type) {
+        case "LOAD_TRANSFER_EVENTS":
+            return {...state, tranferEvent: action.payload}
+        default:
+            return state
+    }
+}
 
 export const allReducers = combineReducers({
     
     loadWeb3Reducer,
     checkWalletConnectionReducer,
     loadTokenDataReducer,
-    loadBalancesReducer
+    loadBalancesReducer,
+    loadEventsReducer
     
 
 })

@@ -141,3 +141,10 @@ export const loadBalances = (contract, address, dispatch)=>{
     )
 }
 
+
+export const getTransferTransactionDetails=async(contract)=>{
+    
+    const transferStream = await contract.getPastEvents('Transfer', {fromBlock:0, toBlock:"latest"})
+    const transfers = transferStream.map(event => event.returnValues)
+
+}

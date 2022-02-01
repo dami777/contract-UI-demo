@@ -83,3 +83,11 @@ export const loadTotalBalance =(balance)=>{
         payload: balance
     })
 }
+
+// function to load transfer events
+export const loadTransferEventsAction = (event) =>{
+    return ({
+        type: "LOAD_TRANSFER_EVENTS",
+        payload: event
+    })
+}
