@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction } from "./actions/action";
+import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction } from "./actions/action";
 
 export const loadWeb3=(dispatch)=>{
 
@@ -34,6 +34,7 @@ export const connectWallet=async(dispatch, web3)=>{
 
     if (accountFromWeb3.length > 0) {
         dispatch(loadConnectedAddressAction(accountFromWeb3[0]))
+        dispatch(checkWalletConnectionAction(true))
         return accountFromWeb3[0]
     }
 }
@@ -43,4 +44,15 @@ export const loadAbi= (dispatch)=>{
     const tokenJson = require("./contractAbi/ERC1400.json")
     const abi = tokenJson.abi
     dispatch(loadAbiAction(abi))
+}
+
+export const checkWalletConnection = async(dispatch)=>{
+
+    const { ethereum } = window 
+    const accounts = await ethereum.request({method: 'eth_accounts'})
+    
+    if ( accounts.length > 0 ) {
+        dispatch(checkWalletConnectionAction(true))
+    }
+
 }

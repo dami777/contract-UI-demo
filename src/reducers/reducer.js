@@ -14,9 +14,20 @@ const loadWeb3Reducer = (state={}, action) =>{
     }
 }
 
+const checkWalletConnectionReducer = (state=false, action) =>{
+    switch (action.type) {
+        case "CHECK_WALLET":
+            return state = true 
+        default:
+            return state
+
+    }
+}
+
 
 export const allReducers = combineReducers({
     
-    loadWeb3Reducer
+    loadWeb3Reducer,
+    checkWalletConnectionReducer
 
 })

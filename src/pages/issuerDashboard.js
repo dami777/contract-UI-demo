@@ -10,11 +10,11 @@ const IssuerDashboard = () =>{
 
     const address = useSelector(
         state => get(state, 'loadWeb3Reducer.address', '')
-      )
+     )
 
-      const web3 = useSelector(
+    const web3 = useSelector(
         state => get(state, 'loadWeb3Reducer.web3', {})
-      )
+    )
 
       
 

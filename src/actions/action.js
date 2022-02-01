@@ -26,3 +26,13 @@ export const loadAbiAction=(abi)=>{
         payload: abi
     })
 }
+
+
+// function to check wallet connection
+
+export const checkWalletConnectionAction=(payload)=>{
+    return ({
+        type: "CHECK_WALLET",
+        payload: payload
+    })
+}

@@ -7,6 +7,8 @@ import { loadAddress, loadWeb3 } from './functions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
+import { checkWalletConnection } from './functions';
+
 
 function App() {
 
@@ -22,6 +24,7 @@ function App() {
       loadAddress(dispatch, web3)
     }
    
+    checkWalletConnection(dispatch)
 
   }
 
