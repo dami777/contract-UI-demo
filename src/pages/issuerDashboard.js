@@ -1,8 +1,9 @@
 import ConnectWallet from "../components/connectWallet"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import {  issueToken } from "../functions"
+import { token } from "../helpers"
 
 const IssuerDashboard = () =>{
 
@@ -30,6 +31,9 @@ const IssuerDashboard = () =>{
         state => get(state, 'loadTokenDataReducer.symbol', '')
     )
 
+    const [recipient, setRecipient] = useState('')
+    const [amount, setAmount] = useState('')
+
 
     return (
         <div>
@@ -44,15 +48,15 @@ const IssuerDashboard = () =>{
                 </div>
 
                 <div className="total-supply">
-                    <h2>Total Supply: {totalSupply}</h2> 
+                    <h2>Total Supply: {token(totalSupply)}</h2> 
                 </div>
             </div>
 
             <div className="issuance">
                     <div>
-                        <input type="text" placeholder="address"/>
-                        <input type="text" placeholder="1000"/>
-                        <button onClick={()=>issueToken(contract, dispatch)}
+                        <input type="text" placeholder="address" value={recipient} onChange={(e)=>setRecipient(e.target.value)}/>
+                        <input type="text" placeholder="1000" value={amount} onChange={(e)=>setAmount(e.target.value)}/>
+                        <button onClick={()=>issueToken(contract, dispatch, address, recipient, amount)}
                          className="issue-token">issue</button>
                     </div>
 

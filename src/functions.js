@@ -82,6 +82,15 @@ export const loadContract=async(web3, dispatch)=>{
     
 }
 
-export const issueToken=async(contract, dispatch)=>{
-    console.log(contract)
+export const issueToken=(contract, dispatch, address, recipient, amount)=>{
+    contract.methods.issueTokens(recipient, amount).send({from: address})
+    .on ('receipt', ()=>{
+        contract.methods.totalSupply().call().then(
+            supply => dispatch(loadTokenTotalSupplyAction(supply))
+        )
+
+        alert('new tokens issued to', recipient)
+    })
+
+    
 }
