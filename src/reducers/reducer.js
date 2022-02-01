@@ -25,9 +25,23 @@ const checkWalletConnectionReducer = (state=false, action) =>{
 }
 
 
+const loadTokenDataReducer=(state={}, action)=>{
+    switch (action.type) {
+        case "TOKEN_NAME":
+            return {...state, name: action.payload}
+        case "TOTAL_SUPPLY":
+            return {...state, totalSupply: action.payload}
+        case "TOKEN_SYMBOL":
+            return {...state, symbol: action.payload}
+    }
+}
+
+
 export const allReducers = combineReducers({
     
     loadWeb3Reducer,
-    checkWalletConnectionReducer
+    checkWalletConnectionReducer,
+    loadTokenDataReducer
+    
 
 })
