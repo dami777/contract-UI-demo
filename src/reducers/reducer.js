@@ -9,6 +9,8 @@ const loadWeb3Reducer = (state={}, action) =>{
             return {...state, address: action.payload}
         case "LOAD_ABI":
             return {...state, abi: action.payload}
+        case "LOAD_CONTRACT":
+            return {...state, contract: action.payload}
         default:
             return state
     }

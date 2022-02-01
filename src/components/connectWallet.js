@@ -8,10 +8,6 @@ const ConnectWallet=()=>{
 
     const dispatch = useDispatch()
 
-    const { ethereum } = window
-
-    console.log(ethereum)
-
     const connected = useSelector(
         state => get(state, 'checkWalletConnectionReducer', false)
      )
@@ -27,7 +23,7 @@ const ConnectWallet=()=>{
 
             {
                 connected ? <button>Connected</button> :
-                
+
                                     <button className="connect-button" onClick={async()=> await connectWallet(dispatch, web3)}>
                                             Connect Wallet
                                     </button> 

@@ -7,12 +7,13 @@ import { loadAddress, loadWeb3 } from './functions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
-import { checkWalletConnection } from './functions';
+import { checkWalletConnection, loadContract } from './functions';
 
 
 function App() {
 
   const dispatch = useDispatch()
+ 
 
   
 
@@ -21,7 +22,10 @@ function App() {
     const web3 = loadWeb3(dispatch)
 
     if (web3) {
+
+      console.log(web3)
       loadAddress(dispatch, web3)
+      loadContract(web3, dispatch)
     }
    
     checkWalletConnection(dispatch)

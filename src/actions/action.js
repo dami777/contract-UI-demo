@@ -57,10 +57,20 @@ export const loadTokenSymbolAction=(name)=>{
 
 
 // function to load token total supply
-export const loadTokenTotoalSupplyAction=(name)=>{
+export const loadTokenTotalSupplyAction=(name)=>{
     return ({
         type: "TOKEN_TOTAL_SUPPLY",
         payload: name
+
+    })
+}
+
+
+// function to load contract
+export const loadContractAction=(contract)=>{
+    return ({
+        type: "LOAD_CONTRACT",
+        payload: contract
 
     })
 }

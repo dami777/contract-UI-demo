@@ -42,8 +42,9 @@ export const connectWallet=async(dispatch, web3)=>{
 export const loadAbi= (dispatch)=>{
 
     const tokenJson = require("./contractAbi/ERC1400.json")
-    const abi = tokenJson.abi
+    const abi = tokenJson
     dispatch(loadAbiAction(abi))
+    return abi
 }
 
 export const checkWalletConnection = async(dispatch)=>{
@@ -55,4 +56,20 @@ export const checkWalletConnection = async(dispatch)=>{
         dispatch(checkWalletConnectionAction(true))
     }
 
+}
+
+/*export const loadTokenData=async(dispatch, web3)=>{
+
+
+
+}*/
+
+export const loadContract=async(web3, dispatch)=>{
+    const abi = loadAbi(dispatch)
+    const networkID = await web3.eth.net.getId()
+    const contractAddress = abi.networks[networkID].address     // get the contract address
+
+    const contract = new web3.eth.Contract(abi.abi, contractAddress)
+    console.log(contract)
+    
 }
