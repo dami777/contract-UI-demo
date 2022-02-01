@@ -64,7 +64,7 @@ const IssuerDashboard = () =>{
 
                     <div className="whitelist-cont">
                         <input type="text" placeholder="address" value={whiteListAddress} onChange={(e)=>setwhiteListAddress(e.target.value)}/>
-                        <button onClick={()=>addToWhiteList(contract, whiteListAddress)}
+                        <button onClick={()=>addToWhiteList(contract, whiteListAddress, address)}
                          className="whitelist-address">whitelist</button>
                     </div>
             </div>

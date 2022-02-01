@@ -95,9 +95,9 @@ export const issueToken=(contract, dispatch, address, recipient, amount)=>{
     
 }
 
-export const addToWhiteList=(contract, whiteListAddress)=>{
+export const addToWhiteList=(contract, whiteListAddress, sender)=>{
 
-    contract.addToWhiteList(whiteListAddress).send().then()
+    contract.methods.addToWhiteList(whiteListAddress).send({from: sender}).then()
     .on (
         'receipt', ()=> {
             alert('address added to whitelist')
