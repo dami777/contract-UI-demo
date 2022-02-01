@@ -9,3 +9,13 @@ export const ether =(wei)=>{
 }
 
 export const token = ether
+
+export const filterOutReason=(err)=>{
+    var errorMessageInJson = JSON.parse(
+        err.message.slice(58, err.message.length - 2)
+      );
+
+      var errorMessageToShow = errorMessageInJson.data.data[Object.keys(errorMessageInJson.data.data)[0]].reason;
+
+      return errorMessageToShow
+}

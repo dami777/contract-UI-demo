@@ -95,6 +95,33 @@ export const issueToken=(contract, dispatch, address, recipient, amount)=>{
     
 }
 
+
+export const transferToken=(contract, dispatch, address, recipient, amount)=>{
+    contract.methods.transfer(recipient, amount).send({from: address})
+    .on ('receipt', ()=>{
+        contract.methods.totalSupply().call().then(
+            supply => dispatch(loadTokenTotalSupplyAction(supply))
+        )
+
+        alert('tokens transferred successfully', recipient)
+    })
+
+    .on (
+        //'error', (err)=>console.log(err.message['reason'])
+        'error', (err)=>{
+            var errorMessageInJson = JSON.parse(
+                err.message.slice(58, err.message.length - 2)
+              );
+
+              var errorMessageToShow = errorMessageInJson.data.data[Object.keys(errorMessageInJson.data.data)[0]].reason;
+
+              console.log(errorMessageToShow)
+        }
+    )
+
+    
+}
+
 export const addToWhiteList=(contract, whiteListAddress, sender)=>{
 
     contract.methods.addToWhiteList(whiteListAddress).send({from: sender})
@@ -113,3 +140,4 @@ export const loadBalances = (contract, address, dispatch)=>{
         balance => dispatch(loadTotalBalance(balance))
     )
 }
+
