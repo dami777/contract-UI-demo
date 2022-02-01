@@ -36,3 +36,31 @@ export const checkWalletConnectionAction=(payload)=>{
         payload: payload
     })
 }
+
+// function to load token name
+export const loadTokenNameAction=(name)=>{
+    return ({
+        type: "TOKEN_NAME",
+        payload: name
+
+    })
+}
+
+// function to load token symbol
+export const loadTokenSymbolAction=(name)=>{
+    return ({
+        type: "TOKEN_SYMBOL",
+        payload: name
+
+    })
+}
+
+
+// function to load token total supply
+export const loadTokenTotoalSupplyAction=(name)=>{
+    return ({
+        type: "TOKEN_TOTAL_SUPPLY",
+        payload: name
+
+    })
+}
