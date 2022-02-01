@@ -7,12 +7,16 @@ import { loadAddress, loadWeb3 } from './functions';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
-import { checkWalletConnection, loadContract } from './functions';
+import { checkWalletConnection, loadContract, loadBalances } from './functions';
 
 
 function App() {
 
   const dispatch = useDispatch()
+
+  const address = useSelector(
+    state => get(state, 'loadWeb3Reducer.address', '')
+  )
  
 
   
@@ -25,7 +29,9 @@ function App() {
 
       console.log(web3)
       loadAddress(dispatch, web3)
-      loadContract(web3, dispatch)
+      await loadContract(web3, dispatch)
+      
+      
     }
    
     checkWalletConnection(dispatch)

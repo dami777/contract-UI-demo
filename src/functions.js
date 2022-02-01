@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction, loadContractAction, loadTokenNameAction, loadTokenSymbolAction, loadTokenTotalSupplyAction } from "./actions/action";
+import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction, loadContractAction, loadTokenNameAction, loadTokenSymbolAction, loadTokenTotalSupplyAction, loadTotalBalance } from "./actions/action";
 
 export const loadWeb3=(dispatch)=>{
 
@@ -104,4 +104,12 @@ export const addToWhiteList=(contract, whiteListAddress, sender)=>{
         }
     )
 
+}
+
+export const loadBalances = (contract, address, dispatch)=>{
+
+    
+    contract.methods.balanceOf(address).call().then(
+        balance => dispatch(loadTotalBalance(balance))
+    )
 }
