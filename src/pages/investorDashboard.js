@@ -3,7 +3,7 @@ import { connectWallet, loadBalances } from "../functions"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import ConnectWallet from "../components/connectWallet"
-import { token } from "../helpers"
+import { token, tokensWei } from "../helpers"
 import { transferToken } from "../functions"
 
 
@@ -46,7 +46,7 @@ const InvestorDashboard=()=>{
                 <div>
                     <input type="text" placeholder="address" value={recipient} onChange={(e)=>setRecipient(e.target.value)}/>
                     <input type="text" placeholder="1000" value={amount} onChange={(e)=>setAmount(e.target.value)}/>
-                    <button onClick={()=>transferToken(contract, dispatch, address, recipient, amount)}
+                    <button onClick={()=>transferToken(contract, dispatch, address, recipient, tokensWei(amount))}
                         className="issue-token">send</button>
                 </div>
 

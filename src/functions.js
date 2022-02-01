@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction, loadContractAction, loadTokenNameAction, loadTokenSymbolAction, loadTokenTotalSupplyAction, loadTotalBalance } from "./actions/action";
+import { filterOutReason } from "./helpers";
 
 export const loadWeb3=(dispatch)=>{
 
@@ -99,25 +100,24 @@ export const issueToken=(contract, dispatch, address, recipient, amount)=>{
 export const transferToken=(contract, dispatch, address, recipient, amount)=>{
     contract.methods.transfer(recipient, amount).send({from: address})
     .on ('receipt', ()=>{
-        contract.methods.totalSupply().call().then(
-            supply => dispatch(loadTokenTotalSupplyAction(supply))
+
+         contract.methods.balanceOf(address).call().then(
+            balance => dispatch(loadTotalBalance(balance))
         )
 
         alert('tokens transferred successfully', recipient)
     })
 
     .on (
-        //'error', (err)=>console.log(err.message['reason'])
+
         'error', (err)=>{
-            var errorMessageInJson = JSON.parse(
-                err.message.slice(58, err.message.length - 2)
-              );
+            
+            const errMessage = filterOutReason(err)
 
-              var errorMessageToShow = errorMessageInJson.data.data[Object.keys(errorMessageInJson.data.data)[0]].reason;
-
-              console.log(errorMessageToShow)
+            alert(errMessage)
         }
     )
+    
 
     
 }
