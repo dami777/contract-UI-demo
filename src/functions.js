@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction } from "./actions/action";
+import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction, loadContractAction, loadTokenNameAction, loadTokenSymbolAction, loadTokenTotalSupplyAction } from "./actions/action";
 
 export const loadWeb3=(dispatch)=>{
 
@@ -58,11 +58,6 @@ export const checkWalletConnection = async(dispatch)=>{
 
 }
 
-/*export const loadTokenData=async(dispatch, web3)=>{
-
-
-
-}*/
 
 export const loadContract=async(web3, dispatch)=>{
     const abi = loadAbi(dispatch)
@@ -70,6 +65,23 @@ export const loadContract=async(web3, dispatch)=>{
     const contractAddress = abi.networks[networkID].address     // get the contract address
 
     const contract = new web3.eth.Contract(abi.abi, contractAddress)
-    console.log(contract)
     
+    
+    dispatch(loadContractAction(contract))
+
+    const tokenName = await contract.methods.name().call()
+    const totalSupply = await contract.methods.totalSupply().call()
+    const symbol = await contract.methods.symbol().call()
+
+    dispatch(loadTokenNameAction(tokenName))
+    dispatch(loadTokenSymbolAction(symbol))
+    dispatch(loadTokenTotalSupplyAction(totalSupply))
+    
+
+    return contract
+    
+}
+
+export const issueToken=async(contract, dispatch)=>{
+    console.log(contract)
 }

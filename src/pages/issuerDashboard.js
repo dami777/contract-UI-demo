@@ -2,7 +2,7 @@ import ConnectWallet from "../components/connectWallet"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import { useEffect } from "react"
-import { loadAbi } from "../functions"
+import {  issueToken } from "../functions"
 
 const IssuerDashboard = () =>{
 
@@ -12,19 +12,23 @@ const IssuerDashboard = () =>{
         state => get(state, 'loadWeb3Reducer.address', '')
      )
 
-    const web3 = useSelector(
-        state => get(state, 'loadWeb3Reducer.web3', {})
+    const contract = useSelector(
+        state => get(state, 'loadWeb3Reducer.contract', {})
     )
 
-      
 
-      useEffect(()=>{
+    const tokenName = useSelector(
+        state => get(state, 'loadTokenDataReducer.name', '')
+    )
 
-        loadAbi(dispatch)
 
+    const totalSupply = useSelector(
+        state => get(state, 'loadTokenDataReducer.totalSupply', '')
+    )
 
-      })
-
+    const tokenSymbol = useSelector(
+        state => get(state, 'loadTokenDataReducer.symbol', '')
+    )
 
 
     return (
@@ -35,12 +39,12 @@ const IssuerDashboard = () =>{
             <div className="about-token">
                 <div className="token-meta-data">
                     <p>{address}</p>
-                    <p>Token Name</p>
-                    <p>Symbol</p>
+                    <h2>Token Name: {tokenName}</h2>
+                    <h2>Symbol: {tokenSymbol}</h2>
                 </div>
 
                 <div className="total-supply">
-                    <p>Total Supply</p>
+                    <h2>Total Supply: {totalSupply}</h2> 
                 </div>
             </div>
 
@@ -48,7 +52,8 @@ const IssuerDashboard = () =>{
                     <div>
                         <input type="text" placeholder="address"/>
                         <input type="text" placeholder="1000"/>
-                        <button className="issue-token">issue</button>
+                        <button onClick={()=>issueToken(contract, dispatch)}
+                         className="issue-token">issue</button>
                     </div>
 
 
