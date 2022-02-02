@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import ConnectWallet from "../components/connectWallet"
 import { token, tokensWei } from "../helpers"
-import { transferToken, getTransferTransactionDetails } from "../functions"
+import { transferToken, getTransferTransactionDetails,preprocessTransfer } from "../functions"
 
 
 
@@ -26,8 +26,10 @@ const InvestorDashboard=()=>{
     )
 
     const transferEvents = useSelector(
-        state => get(state, 'loadEventsReducer.tranferEvent', {})
+        state => get(state, 'loadEventsReducer.tranferEvent', [])
     )
+
+    const decoratedTransfer = preprocessTransfer(address, transferEvents)
 
 
     const checkContractEmptiness = Object.keys(contract)    // checks if the contract has been loaded from the redux store
@@ -71,15 +73,15 @@ const InvestorDashboard=()=>{
                     <tbody>
                         {
 
-                            Object.keys(transferEvents).length > 0 && 
+                            //Object.keys(transferEvents).length > 0 && 
 
-                            transferEvents.map((event)=>{
+                            decoratedTransfer.map((event, index)=>{
 
                                 return(
-                                    <tr>
+                                    <tr key={index}>
                                         <td>{event._from}</td>
                                         <td>{event._to}</td>
-                                        <td>{token(event._amount)}</td>
+                                        <td>{event.type === "credit" ? "+" + token(event._amount) : "-" + token(event._amount)}</td>
                                     </tr>
                                 )
                                 
