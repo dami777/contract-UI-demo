@@ -1,10 +1,10 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { connectWallet, loadBalances } from "../functions"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import ConnectWallet from "../components/connectWallet"
 import { token, tokensWei } from "../helpers"
-import { transferToken, getTransferTransactionDetails,preprocessTransfer } from "../functions"
+import { transferToken, getTransferTransactionDetails, preprocessTransfer } from "../functions"
 
 
 
@@ -32,13 +32,13 @@ const InvestorDashboard=()=>{
     const decoratedTransfer = preprocessTransfer(address, transferEvents)
 
 
-    const checkContractEmptiness = Object.keys(contract)    // checks if the contract has been loaded from the redux store
+    useEffect(()=>{
+        if (Object.keys(contract).length > 0) {
+            loadBalances(contract, address, dispatch)
+            getTransferTransactionDetails(contract, dispatch)
+        }
+    })
 
-    if (checkContractEmptiness.length > 0) {
-        loadBalances(contract, address, dispatch)
-        getTransferTransactionDetails(contract, dispatch)
-        
-    }
 
     const [recipient, setRecipient] = useState('')
     const [amount, setAmount] = useState('')

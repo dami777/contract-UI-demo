@@ -152,6 +152,8 @@ export const getTransferTransactionDetails=async(contract, dispatch)=>{
     const transfers = transferStream.map(event => event.returnValues)
     dispatch(loadTransferEventsAction(transfers))
 
+    return transfers
+
 }
 
 export const preprocessTransfer=(tokenHolder, transferEvent)=>{
