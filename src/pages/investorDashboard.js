@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import ConnectWallet from "../components/connectWallet"
 import { token, tokensWei } from "../helpers"
-import { transferToken } from "../functions"
+import { transferToken, getTransferTransactionDetails } from "../functions"
 
 
 
@@ -25,10 +25,17 @@ const InvestorDashboard=()=>{
         state => get(state, 'loadWeb3Reducer.contract', {})
     )
 
+    const transferEvents = useSelector(
+        state => get(state, 'loadEventsReducer.tranferEvent', {})
+    )
+
+
     const checkContractEmptiness = Object.keys(contract)    // checks if the contract has been loaded from the redux store
 
     if (checkContractEmptiness.length > 0) {
         loadBalances(contract, address, dispatch)
+        getTransferTransactionDetails(contract, dispatch)
+        
     }
 
     const [recipient, setRecipient] = useState('')
@@ -53,11 +60,34 @@ const InvestorDashboard=()=>{
             <h2>Transactions</h2>
             <center>         
                 <table>
-                    <th>
-                        <td>from</td>
-                        <td>to</td>
-                        <td>amount</td>
-                    </th>
+                    <thead>
+                        <tr>
+                            <th>from</th>
+                            <th>to</th>
+                            <th>amount</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {
+
+                            Object.keys(transferEvents).length > 0 && 
+
+                            transferEvents.map((event)=>{
+
+                                return(
+                                    <tr>
+                                        <td>{event._from}</td>
+                                        <td>{event._to}</td>
+                                        <td>{token(event._amount)}</td>
+                                    </tr>
+                                )
+                                
+                            })
+                        }
+                        
+                    </tbody>
+                    
                 </table>
             </center>
         </div>

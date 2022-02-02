@@ -1,5 +1,9 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, checkWalletConnectionAction, loadContractAction, loadTokenNameAction, loadTokenSymbolAction, loadTokenTotalSupplyAction, loadTotalBalance } from "./actions/action";
+import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, 
+    checkWalletConnectionAction, loadContractAction, loadTokenNameAction, 
+    loadTokenSymbolAction, loadTokenTotalSupplyAction, loadTotalBalance,
+    loadTransferEventsAction 
+} from "./actions/action";
 import { filterOutReason } from "./helpers";
 
 export const loadWeb3=(dispatch)=>{
@@ -142,9 +146,22 @@ export const loadBalances = (contract, address, dispatch)=>{
 }
 
 
-export const getTransferTransactionDetails=async(contract)=>{
+export const getTransferTransactionDetails=async(contract, dispatch)=>{
     
     const transferStream = await contract.getPastEvents('Transfer', {fromBlock:0, toBlock:"latest"})
     const transfers = transferStream.map(event => event.returnValues)
+    dispatch(loadTransferEventsAction(transfers))
 
+}
+
+export const preprocessTransfer=(tokenHolder, transferEvent)=>{
+    transferEvent = transferEvent.map((event)=>{
+        if (event._from === tokenHolder) {
+            return {...event, type: "debit"}
+        } else {
+            return {...event, type: "credit"}
+        }
+    })
+
+    return transferEvent
 }
