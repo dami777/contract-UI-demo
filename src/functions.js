@@ -167,3 +167,8 @@ export const preprocessTransfer=(tokenHolder, transferEvent)=>{
 
     return transferEvent
 }
+
+
+export const sign=(data)=>{
+    
+}
