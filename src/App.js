@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { get } from 'lodash';
 import { checkWalletConnection, loadContract, loadBalances } from './functions';
+import Sign from './pages/sign';
 
 
 function App() {
@@ -60,6 +61,8 @@ function App() {
                         <Route exact path='/issuer' component={IssuerDashboard} /> 
 
                         <Route path="/investor" component={InvestorDashboard}/>
+
+                        <Route path="/signature" component={Sign} />
                     </Switch>
                   
                   </div>
