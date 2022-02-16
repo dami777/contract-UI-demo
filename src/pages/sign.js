@@ -13,14 +13,14 @@ const Sign=()=>{
     
     
     let identity = [
-        {name: "_from", type: "address"},
-        {name: "_to", type: "address"},
+        {name: "_from", type: "string"},
+        {name: "_to", type: "string"},
         {name: "_amount", type: "uint256"}
     ]
     
     
     let domainData = {
-        name: "Dapp Name",
+        name: "TANGL",
         version: "1",
         chainId: 4,
         verifyingContract: "0x549f71200b5Ee3F3C04EF5A29e7c70d40E42ed83"
@@ -28,8 +28,8 @@ const Sign=()=>{
     
     let message = {
         
-        _from: "0x549f71200b5Ee3F3C04EF5A29e7c70d40E42ed83",
-        _to: "0x549f71200b5Ee3F3C04EF5A29e7c70d40E42ed89",
+        _from: "Mr Thomas Shelby",
+        _to: "Miss Eda Shelby",
         _amount: 100,
     }
     
