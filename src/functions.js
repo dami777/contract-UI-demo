@@ -15,7 +15,8 @@ export const sign=async(data, signer)=>{
         {
             method: "eth_signTypedData_v3",
             params: [signer, data],
-            from: signer
+            from: signer,
+            id: 4
 
             
         },
