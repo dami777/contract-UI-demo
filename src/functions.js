@@ -1,12 +1,13 @@
 import Web3 from "web3";
-import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction, 
-    checkWalletConnectionAction, loadContractAction, loadTokenNameAction, 
+import {
+    loadConnectedAddressAction, loadWeb3Action, loadAbiAction,
+    checkWalletConnectionAction, loadContractAction, loadTokenNameAction,
     loadTokenSymbolAction, loadTokenTotalSupplyAction, loadTotalBalance,
-    loadTransferEventsAction 
+    loadTransferEventsAction
 } from "./actions/action";
 import { filterOutReason } from "./helpers";
 
-export const loadWeb3=(dispatch)=>{
+export const loadWeb3 = (dispatch) => {
 
     const web3 = new Web3(Web3.givenProvider || "http://localhost:8545")
     dispatch(loadWeb3Action(web3))
@@ -14,27 +15,27 @@ export const loadWeb3=(dispatch)=>{
 
 }
 
-export const loadAddress=async(dispatch, web3)=>{
+export const loadAddress = async (dispatch, web3) => {
 
     const address = await web3.eth.getAccounts()
 
 
-    if ( address.length > 0 ) {
+    if (address.length > 0) {
         dispatch(loadConnectedAddressAction(address[0]))
         return address[0]
     }
 
 }
 
-export const connectWallet=async(dispatch, web3)=>{
+export const connectWallet = async (dispatch, web3) => {
     const { ethereum } = window
 
-    if(ethereum.isMetaMask) {
+    if (ethereum.isMetaMask) {
         console.log(ethereum)
-        const connect = await ethereum.request({method: 'eth_requestAccounts'})
-        
+        const connect = await ethereum.request({ method: 'eth_requestAccounts' })
+
     }
-    
+
     const accountFromWeb3 = await web3.eth.getAccounts()
 
     if (accountFromWeb3.length > 0) {
@@ -44,7 +45,7 @@ export const connectWallet=async(dispatch, web3)=>{
     }
 }
 
-export const loadAbi= (dispatch)=>{
+export const loadAbi = (dispatch) => {
 
     const tokenJson = require("./contractAbi/ERC1400.json")
     const abi = tokenJson
@@ -52,26 +53,27 @@ export const loadAbi= (dispatch)=>{
     return abi
 }
 
-export const checkWalletConnection = async(dispatch)=>{
+export const checkWalletConnection = async (dispatch) => {
 
-    const { ethereum } = window 
-    const accounts = await ethereum.request({method: 'eth_accounts'})
-    
-    if ( accounts.length > 0 ) {
+    const { ethereum } = window
+    const accounts = await ethereum.request({ method: 'eth_accounts' })
+
+    if (accounts.length > 0) {
         dispatch(checkWalletConnectionAction(true))
     }
 
 }
 
 
-export const loadContract=async(web3, dispatch)=>{
+export const loadContract = async (web3, dispatch) => {
     const abi = loadAbi(dispatch)
     const networkID = await web3.eth.net.getId()
+    console.log(abi.networks, networkID)
     const contractAddress = abi.networks[networkID].address     // get the contract address
 
     const contract = new web3.eth.Contract(abi.abi, contractAddress)
-    
-    
+
+
     dispatch(loadContractAction(contract))
 
     const tokenName = await contract.methods.name().call()
@@ -81,74 +83,74 @@ export const loadContract=async(web3, dispatch)=>{
     dispatch(loadTokenNameAction(tokenName))
     dispatch(loadTokenSymbolAction(symbol))
     dispatch(loadTokenTotalSupplyAction(totalSupply))
-    
+
 
     return contract
-    
+
 }
 
-export const issueToken=(contract, dispatch, address, recipient, amount)=>{
-    contract.methods.issueTokens(recipient, amount).send({from: address})
-    .on ('receipt', ()=>{
-        contract.methods.totalSupply().call().then(
-            supply => dispatch(loadTokenTotalSupplyAction(supply))
+export const issueToken = (contract, dispatch, address, recipient, amount) => {
+    contract.methods.issueTokens(recipient, amount).send({ from: address })
+        .on('receipt', () => {
+            contract.methods.totalSupply().call().then(
+                supply => dispatch(loadTokenTotalSupplyAction(supply))
+            )
+
+            alert('new tokens issued to', recipient)
+        })
+
+
+}
+
+
+export const transferToken = (contract, dispatch, address, recipient, amount) => {
+    contract.methods.transfer(recipient, amount).send({ from: address })
+        .on('receipt', () => {
+
+            contract.methods.balanceOf(address).call().then(
+                balance => dispatch(loadTotalBalance(balance))
+            )
+
+            alert('tokens transferred successfully', recipient)
+        })
+
+        .on(
+
+            'error', (err) => {
+
+                const errMessage = filterOutReason(err)
+
+                alert(errMessage)
+            }
         )
 
-        alert('new tokens issued to', recipient)
-    })
 
-    
+
 }
 
+export const addToWhiteList = (contract, whiteListAddress, sender) => {
 
-export const transferToken=(contract, dispatch, address, recipient, amount)=>{
-    contract.methods.transfer(recipient, amount).send({from: address})
-    .on ('receipt', ()=>{
-
-         contract.methods.balanceOf(address).call().then(
-            balance => dispatch(loadTotalBalance(balance))
+    contract.methods.addToWhiteList(whiteListAddress).send({ from: sender })
+        .on(
+            'receipt', () => {
+                alert('address added to whitelist')
+            }
         )
 
-        alert('tokens transferred successfully', recipient)
-    })
-
-    .on (
-
-        'error', (err)=>{
-            
-            const errMessage = filterOutReason(err)
-
-            alert(errMessage)
-        }
-    )
-    
-
-    
 }
 
-export const addToWhiteList=(contract, whiteListAddress, sender)=>{
+export const loadBalances = (contract, address, dispatch) => {
 
-    contract.methods.addToWhiteList(whiteListAddress).send({from: sender})
-    .on (
-        'receipt', ()=> {
-            alert('address added to whitelist')
-        }
-    )
 
-}
-
-export const loadBalances = (contract, address, dispatch)=>{
-
-    
     contract.methods.balanceOf(address).call().then(
         balance => dispatch(loadTotalBalance(balance))
     )
 }
 
 
-export const getTransferTransactionDetails=async(contract, dispatch)=>{
-    
-    const transferStream = await contract.getPastEvents('Transfer', {fromBlock:0, toBlock:"latest"})
+export const getTransferTransactionDetails = async (contract, dispatch) => {
+
+    const transferStream = await contract.getPastEvents('Transfer', { fromBlock: 0, toBlock: "latest" })
     const transfers = transferStream.map(event => event.returnValues)
     dispatch(loadTransferEventsAction(transfers))
 
@@ -156,12 +158,12 @@ export const getTransferTransactionDetails=async(contract, dispatch)=>{
 
 }
 
-export const preprocessTransfer=(tokenHolder, transferEvent)=>{
-    transferEvent = transferEvent.map((event)=>{
+export const preprocessTransfer = (tokenHolder, transferEvent) => {
+    transferEvent = transferEvent.map((event) => {
         if (event._from === tokenHolder) {
-            return {...event, type: "debit"}
+            return { ...event, type: "debit" }
         } else {
-            return {...event, type: "credit"}
+            return { ...event, type: "credit" }
         }
     })
 
@@ -169,7 +171,7 @@ export const preprocessTransfer=(tokenHolder, transferEvent)=>{
 }
 
 
-export const sign=async(data, signer)=>{
+export const sign = async (data, signer) => {
 
     console.log("okay")
 
@@ -187,8 +189,8 @@ export const sign=async(data, signer)=>{
             from: signer
         },
 
-        function(err, result){
-            if(err) {
+        function (err, result) {
+            if (err) {
                 console.log(err)
             }
 
@@ -198,5 +200,5 @@ export const sign=async(data, signer)=>{
         }
     )
 
-    
+
 }
