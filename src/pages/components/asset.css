@@ -1,0 +1,39 @@
+.asset-flex {
+    display:flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(223, 180, 180);
+    padding: 6px 0;
+}
+.asset-button{
+    width:100%;
+    height:40px;
+    padding:7px 20px;
+    border-radius: 6px;
+    background-color: rgb(27, 24, 201);
+    color:white;
+    cursor:pointer;
+    border:0
+}
+.asset-header{
+    display:flex;
+    justify-content: space-between;
+    border-bottom:1px solid red;
+    padding: 6px 0;
+    margin-bottom: 30px;
+}
+.new_asset{
+    width:190px;
+    height:40px;
+    background-color: rgb(27, 24, 201);
+    color:white;
+    cursor:pointer;
+    border:0
+}
+.new_class{
+    width:190px;
+    height:40px;
+    background-color: rgb(17, 133, 13);
+    color:white;
+    cursor:pointer;
+    border:0
+}
