@@ -3,7 +3,8 @@ import "./components/asset.css"
 import { Link } from 'react-router-dom'
 const Home = () => {
 
-    const URL = "http://localhost:7000"
+    // const URL = "http://localhost:7000"
+    const URL = "https://tangl.herokuapp.com/"
     const [users, setUsers] = useState([])
     useEffect(async () => {
 

@@ -99,7 +99,8 @@ const uploadBackgroundFile = async (file) => {
 }
 
 export const storeUserInfoOnDataBase = (data) => async dispatch => {
-    const URL = "http://localhost:7000"
+    // const URL = "http://localhost:7000"
+    const URL = "https://tangl.herokuapp.com/"
     console.log(data.values)
     const values = data.values
     const image = data.imageAsFile
