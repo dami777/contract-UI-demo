@@ -22,7 +22,7 @@ const InvestorDashboard=()=>{
     )
 
     const contract = useSelector(
-        state => get(state, 'loadWeb3Reducer.contract', {})
+        state => get(state, 'loadWeb3Reducer.erc1400contract', {})
     )
 
     const transferEvents = useSelector(

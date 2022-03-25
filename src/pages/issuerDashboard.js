@@ -2,8 +2,9 @@ import ConnectWallet from "../components/connectWallet"
 import { useSelector, useDispatch } from "react-redux"
 import { get } from "lodash"
 import { useEffect, useState } from "react"
-import {  issueToken, addToWhiteList } from "../functions"
+import {  issueToken, addToWhiteList, setRegulatorOnChain } from "../functions"
 import { token } from "../helpers"
+import CreateOrder from "../components/createOrder"
 
 const IssuerDashboard = () =>{
 
@@ -14,7 +15,7 @@ const IssuerDashboard = () =>{
      )
 
     const contract = useSelector(
-        state => get(state, 'loadWeb3Reducer.contract', {})
+        state => get(state, 'loadWeb3Reducer.erc1400contract', {})
     )
 
 
@@ -31,11 +32,18 @@ const IssuerDashboard = () =>{
         state => get(state, 'loadTokenDataReducer.symbol', '')
     )
 
+    const createdOrder = useSelector(
+        state => get(state, 'loadEventsReducer.issuerOpenedEvent', [])
+    )
+
+    //  const pending order 
+
     const [recipient, setRecipient] = useState('')
     const [amount, setAmount] = useState('')
     const [whiteListAddress, setwhiteListAddress] = useState('')
+    const [regulator, setRegulator] = useState('')
 
-
+    
     return (
         <div>
 
@@ -68,6 +76,15 @@ const IssuerDashboard = () =>{
                          className="whitelist-address">whitelist</button>
                     </div>
             </div>
+
+
+            <h5>Create DVP order</h5>
+            <CreateOrder />
+
+
+            <h3>Set Regulator</h3>
+            <input value={regulator} onChange={(e)=>setRegulator(e.target.value)}/>
+            <button onClick={()=>setRegulatorOnChain(contract, regulator, address)}>set regulator</button>
             
         </div>
     )
