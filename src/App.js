@@ -24,7 +24,7 @@ function App() {
     if (web3) {
 
       console.log(web3)
-      loadAddress(dispatch, web3)
+      await loadAddress(dispatch, web3)
       await loadContract(web3, dispatch)
       
       

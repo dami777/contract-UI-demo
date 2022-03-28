@@ -11,3 +11,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.expired, .non_funded {
+  background: yellow;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.valid, .funded {
+  background: green;
+  font-weight: bold;
+  padding: 5px;
+}

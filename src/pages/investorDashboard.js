@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react"
 import { connectWallet, loadBalances } from "../functions"
 import { useSelector, useDispatch } from "react-redux"
-import { get } from "lodash"
+import { get, reject } from "lodash"
 import ConnectWallet from "../components/connectWallet"
 import { token, tokensWei } from "../helpers"
-import { transferToken, getTransferTransactionDetails, preprocessTransfer } from "../functions"
+import { transferToken, getTransferTransactionDetails, preprocessTransfer, preprocessExpiredOrders, releasePayment, withDrawAsset, checkSecret } from "../functions"
 
 
 
 
 const InvestorDashboard=()=>{
+
+
+    const [recipient, setRecipient] = useState('')
+    const [amount, setAmount] = useState('')
+    const [secret, setSecret] = useState("")
 
     const dispatch = useDispatch()
 
@@ -32,17 +37,56 @@ const InvestorDashboard=()=>{
     const decoratedTransfer = preprocessTransfer(address, transferEvents)
 
 
-    useEffect(()=>{
-        if (Object.keys(contract).length > 0) {
-            loadBalances(contract, address, dispatch)
-            getTransferTransactionDetails(contract, dispatch)
-        }
+    const createdOrder = useSelector(
+        state => get(state, 'loadEventsReducer.investorOpenedEvent', [])
+    )
+
+    const closedOrders = useSelector(
+        state => get(state, 'loadEventsReducer.issuerClosedEvent', [])
+    )
+
+    const fundedOrders = useSelector(
+        state => get(state, 'loadEventsReducer.investorFundedEvent', [])
+    )
+
+    const web3 = useSelector(
+        state => get(state, 'loadWeb3Reducer.web3', {})
+    )
+
+    const htlc20Contract = useSelector(
+        state => get(state, 'loadWeb3Reducer.htlc20contract', {})
+    )
+
+    const htlc1400Contract = useSelector(
+        state => get(state, 'loadWeb3Reducer.htlc1400contract', {})
+    )
+
+
+    const erc20contract = useSelector(
+        state => get(state, 'loadWeb3Reducer.erc20contract', {})
+    )
+
+    const htlc20Address = useSelector(
+        state => get(state, 'loadWeb3Reducer.htlc20Address', '')
+    ) 
+
+
+    const _preprocessExpiredOrders = preprocessExpiredOrders(createdOrder)
+
+    const openOrders = reject(_preprocessExpiredOrders, (order)=>{
+
+        const _closed = closedOrders.some((closedOrder)=>closedOrder._swapID == order._swapID)
+        //const _funded = fundedOrders.some((fundedOrder)=>fundedOrder._swapID == order._swapID)
+
+        return _closed
+
     })
 
+    console.log(address)
+    console.log(createdOrder)
+    console.log(openOrders)
 
-    const [recipient, setRecipient] = useState('')
-    const [amount, setAmount] = useState('')
-
+   
     
     return (
         <div>
@@ -59,7 +103,7 @@ const InvestorDashboard=()=>{
                         className="issue-token">send</button>
                 </div>
 
-            <h2>Transactions</h2>
+            {/*<h2>Transactions</h2>
             <center>         
                 <table>
                     <thead>
@@ -91,7 +135,56 @@ const InvestorDashboard=()=>{
                     </tbody>
                     
                 </table>
-            </center>
+                    </center>*/}
+
+<input placeholder="secret" value={secret} onChange={(e)=>setSecret(e.target.value)}/>
+
+
+
+<table>
+                    <tbody>
+                        <tr>
+                            <th>id</th>
+                            <th>Share Class</th>
+                            <th>Amount</th>
+                            <th>Price USDT</th>
+                            
+                        </tr>
+
+                        
+                        {
+
+                        openOrders.map((order)=>{
+
+                            return(
+                                <tr key={order._swapID}>
+                                   
+                                   <td>{web3.utils.hexToUtf8(order._swapID)}</td>
+                                    <td>{web3.utils.hexToUtf8(order._partition)}</td>
+                                    <td>{token(order._amount)}</td>
+                                    <td>{"$" + token(order._price)}</td>
+                                    <td className={order.expired ? "expired" : "valid"}>{order.expired ? "expired" : "valid"}</td>
+                                    <td>
+                                       <button onClick={()=>releasePayment(order._swapID, htlc20Contract,  erc20contract, order._price, htlc20Address, dispatch, address)}>Release Payment</button>
+                                    </td>
+                                    <td>
+                                        <button onClick={()=>checkSecret(order._swapID, htlc20Contract, web3)}>check secret</button>
+                                    </td>
+
+                                    <td>
+                                        <button onClick={()=>withDrawAsset(order._swapID, secret, setSecret, htlc1400Contract, web3, address, dispatch)}>withdraw asset</button>
+                                    </td>
+                                    
+                                </tr>
+
+
+                            )
+                        })
+                        }   
+                    </tbody>
+                </table>
+
+            
         </div>
     )
 }

@@ -5,7 +5,7 @@ import { loadConnectedAddressAction, loadWeb3Action, loadAbiAction,
     loadTransferEventsAction, loadERC20AbiAction, loadHTLC1400AbiAction, loadHTLC20AbiAction,
     loadERC1400ContractAction, loadERC20ContractAction, loadHTLC1400ContractAction, loadHTLC20ContractAction,
     loadHTLC1400AddressAction, loadHTLC20AddressAction, loadIssuerOpenOrderEventsAction, loadIssuerClosedOrderEventsAction, loadInvestorOpenOrderEventsAction,
-    loadInvestorClosedOrderEventsAction, loadInvestorFundedOrderEventsAction 
+    loadInvestorClosedOrderEventsAction, loadInvestorFundedOrderEventsAction, loadIssuerClosedOrder, loadIssuerNewOrder, loadInvestorClosedOrder, loadInvestorNewOrder 
 } from "./actions/action";
 import { filterOutReason, tokensWei } from "./helpers";
 import moment from "moment";
@@ -53,15 +53,16 @@ export const connectWallet=async(dispatch, web3)=>{
 
 export const loadAbi= (dispatch)=>{
 
-    const tokenJson = require("./contractAbi/ERC1400.json")
+    const ERC1400_JSON = require("./contractAbi/ERC1400.json")
     const ERC20_JSON = require("./contractAbi/ERC20.json")
     const HTLC20_JSON = require("./contractAbi/HTLC20.json")
     const HTLC1400_JSON = require("./contractAbi/HTLC1400.json")
-    const ERC1400_JSON = tokenJson
-    dispatch(loadAbiAction(ERC1400_JSON))
+     
+    /*dispatch(loadAbiAction(ERC1400_JSON))
     dispatch(loadHTLC20AbiAction(HTLC20_JSON))
     dispatch(loadHTLC1400AbiAction(HTLC1400_JSON))
-    dispatch(loadERC20AbiAction(ERC20_JSON))
+    dispatch(loadERC20AbiAction(ERC20_JSON))*/
+
     return {ERC1400_JSON, ERC20_JSON, HTLC1400_JSON, HTLC20_JSON}
 }
 
@@ -221,7 +222,7 @@ export const sign=async(data, signer)=>{
     
 }
 
-export const openOrder=(web3, htlc1400Contract, htlc1400Address, htlc20Contract, erc1400Contract, orderID, issuerAddress, investorAddress, amount, price, htlc1400ExpirationDay, htlc20ExpirationDay, secret, className)=>{
+export const openOrder=(web3, htlc1400Contract, htlc1400Address, htlc20Contract, erc1400Contract, orderID, issuerAddress, investorAddress, amount, price, htlc1400ExpirationDay, htlc20ExpirationDay, secret, className, dispatch)=>{
 
     const htlc20Expiration = new Date(moment().add(htlc20ExpirationDay, 'days').unix()).getTime()
     const htlc1400Expiration = new Date(moment().add(htlc1400ExpirationDay, 'days').unix()).getTime()
@@ -236,15 +237,16 @@ export const openOrder=(web3, htlc1400Contract, htlc1400Address, htlc20Contract,
     const data =  web3.eth.abi.encodeParameters(["bytes", "bytes32", "bool", "bool"], [signature, ethHash, fromIsWhiteListedOrIssuer, toIsWhiteListed])
     const classByte = web3.utils.asciiToHex(className)
     
-    htlc20Contract.methods.openOrder(orderIDByte, investorAddress, tokensWei(price), htlc20Expiration, secretHash, secretByte).send({from: issuerAddress})
+    htlc20Contract.methods.openOrder(orderIDByte, investorAddress, tokensWei(price), tokensWei(amount), htlc20Expiration, secretHash, secretByte, classByte).send({from: issuerAddress})
     .on (
-        'receipt', ()=> {
-
+        'receipt', (receipt)=> {
+            dispatch(loadInvestorNewOrder(receipt.events.OpenedOrder.returnValues))
             erc1400Contract.methods.authorizeOperator(htlc1400Address).send({from: issuerAddress})
             .on("receipt", ()=>htlc1400Contract.methods.openOrder(orderIDByte, secretByte, secretHash, classByte, investorAddress, tokensWei(amount), htlc1400Expiration, data).send({from: issuerAddress})
             
             .on(
-                "receipt", ()=>{
+                "receipt", (receipt)=>{
+                    dispatch(loadIssuerNewOrder(receipt.events.OpenedOrder.returnValues))
                     alert("order opened successfully")
                 }
             ))     
@@ -306,5 +308,91 @@ export const loadOrderStates=async(htlc1400Contract, htlc20Contract, dispatch)=>
     dispatch(loadInvestorOpenOrderEventsAction(investorOpenedOrders))
     dispatch(loadInvestorClosedOrderEventsAction(investorClosedOrders))
     dispatch(loadInvestorFundedOrderEventsAction(investorFundedOrders))
+
     
 }
+
+
+export const preprocessExpiredOrders=(orders)=>{
+
+    const openOrders = orders.map((order)=>{
+        if(new Date(moment().unix()).getTime() > Number(order._expiration)){
+            return {...order, expired:true}
+        } else {
+            return {...order, expired:false}
+        }
+    })
+
+
+    return openOrders
+}
+
+export const preprocessFundedOrders=async(orders, htlc20Contract)=>{
+
+    const _orders = await Promise.all(
+
+        orders.map(async(order)=>{
+            let _order = await htlc20Contract.methods.checkOrder(order._swapID).call()
+            const funded = _order._funded
+    
+            console.log(funded)
+            return {...order, _funded:funded}
+                                
+        })
+
+    )
+    
+
+    return _orders
+}
+
+export const releasePayment=(orderID, htlc20Contract, erc20Contract, price, htlc20Address, dispatch, investorAddress)=>{
+
+    erc20Contract.methods.approve(htlc20Address, tokensWei(price)).send({from:investorAddress})
+    .on("receipt", ()=>htlc20Contract.methods.fundOrder(orderID).send({from: investorAddress})
+    
+    .on("receipt", ()=>{
+        alert("payment released for the order")
+    })
+    )
+
+}
+
+
+export const withDrawPayment=(orderID, secret, setSecret, htlc20Contract, web3, address, dispatch)=>{
+
+    htlc20Contract.methods.issuerWithdrawal(orderID, web3.utils.asciiToHex(secret)).send({from:address})
+    .on("receipt", (receipt)=>{
+        alert("payment withdrawn")
+        setSecret("")
+        dispatch(loadInvestorClosedOrder(receipt.events.ClosedOrder.returnValues))
+    })
+
+    .on("error", (error)=>{
+        const errMessage = filterOutReason(error)
+
+        alert(errMessage)
+    })
+
+}
+
+export const withDrawAsset=(orderID, secret, setSecret, htlc1400Contract, web3, address, dispatch)=>{
+
+    htlc1400Contract.methods.recipientWithdrawal(orderID, web3.utils.asciiToHex(secret)).send({from:address})
+    .on("receipt", (receipt)=>{   
+        alert("security token withdrawn")
+        setSecret("")
+        dispatch(loadIssuerClosedOrder(receipt.events.ClosedOrder.returnValues))
+    })
+
+}
+
+export const checkSecret=async(orderID, htlc20Contract, web3)=>{
+    const order = await htlc20Contract.methods.checkOrder(orderID).call()
+    const secret = order._secretKey
+    alert(web3.utils.hexToUtf8(secret))
+}
+
+
+
+

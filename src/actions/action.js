@@ -199,3 +199,32 @@ export const loadInvestorFundedOrderEventsAction = (event) =>{
     })
 }
 
+export const loadIssuerClosedOrder =(data)=>{
+    return ({
+        type: "LOAD_NEW_ISSUER_CLOSED_ORDER_EVENT",
+        payload: data
+    })
+}
+
+export const loadInvestorClosedOrder =(data)=>{
+    return ({
+        type: "LOAD_NEW_INVESTOR_CLOSED_ORDER_EVENT",
+        payload: data
+    })
+}
+
+export const loadIssuerNewOrder =(data)=>{
+    return ({
+        type: "LOAD_NEW_ISSUER_OPENED_ORDER_EVENT",
+        payload: data
+    })
+}
+
+
+export const loadInvestorNewOrder =(data)=>{
+    return ({
+        type: "LOAD_NEW_INVESTOR_OPENED_ORDER_EVENT",
+        payload: data
+    })
+}
+

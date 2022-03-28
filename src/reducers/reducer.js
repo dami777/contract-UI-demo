@@ -73,14 +73,25 @@ const loadEventsReducer=(state={}, action)=>{
         case "LOAD_ISSUER_OPENED_ORDER_EVENTS":
             return {...state, issuerOpenedEvent: action.payload}
 
+        case "LOAD_NEW_ISSUER_OPENED_ORDER_EVENT":
+            return {...state, issuerOpenedEvent: [...state.issuerOpenedEvent, action.payload]}
+
         case "LOAD_ISSUER_CLOSED_ORDER_EVENTS":
             return {...state, issuerClosedEvent: action.payload}
+        
+        case "LOAD_NEW_ISSUER_CLOSED_ORDER_EVENT":
+            return {...state, issuerClosedEvent: [...state.issuerClosedEvent, action.payload]}
 
         case "LOAD_INVESTOR_OPENED_ORDER_EVENTS":
             return {...state, investorOpenedEvent: action.payload}
+        case "LOAD_NEW_INVESTOR_OPENED_ORDER_EVENT":
+            return {...state, investorOpenedEvent: [...state.investorOpenedEvent, action.payload]}
 
         case "LOAD_INVESTOR_CLOSED_ORDER_EVENTS":
             return {...state, investorClosedEvent: action.payload}
+
+        case "LOAD_NEW_INVESTOR_CLOSED_ORDER_EVENT":
+            return {...state, issuerClosedEvent: [...state.investorClosedEvent, action.payload]}
 
         case "LOAD_INVESTOR_FUNDED_ORDER_EVENTS":
             return {...state, investorFundedEvent: action.payload}

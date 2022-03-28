@@ -15,6 +15,8 @@ const CreateOrder=()=>{
         const [amount, setAmount] = useState("")
 
 
+        const dispatch = useDispatch()
+
         const erc1400contract = useSelector(
             state => get(state, 'loadWeb3Reducer.erc1400contract', {})
         )
@@ -62,7 +64,7 @@ const CreateOrder=()=>{
                     <input placeholder="secret" value={secret} onChange={(e)=>setSecret(e.target.value)}/>
                 {/*<p>{secretHash}</p> */}
 
-                <button onClick={()=>openOrder(web3, htlc1400contract, htlc1400Address, htlc20contract, erc1400contract, id, address, investor, amount, price, issuerExpiration, investorExpiration, secret, partition)}>create order</button>
+                <button onClick={()=>openOrder(web3, htlc1400contract, htlc1400Address, htlc20contract, erc1400contract, id, address, investor, amount, price, issuerExpiration, investorExpiration, secret, partition, dispatch)}>create order</button>
                    
             </div>
         )
