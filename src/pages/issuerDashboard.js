@@ -56,7 +56,7 @@ const IssuerDashboard = () =>{
    // const _preprocessedFundedOrders = preprocessFundedOrders(_preprocessExpiredOrders, htlc20Contract)
     const openOrders = reject(_preprocessExpiredOrders, (order)=>{
 
-        const _closed = closedOrders.some((closedOrder)=>closedOrder._swapID == order._swapID)
+        const _closed = closedOrders.some((closedOrder)=>closedOrder._swapID === order._swapID)
         return _closed
 
     })

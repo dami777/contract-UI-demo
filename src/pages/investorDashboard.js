@@ -30,13 +30,6 @@ const InvestorDashboard=()=>{
         state => get(state, 'loadWeb3Reducer.erc1400contract', {})
     )
 
-    const transferEvents = useSelector(
-        state => get(state, 'loadEventsReducer.tranferEvent', [])
-    )
-
-    const decoratedTransfer = preprocessTransfer(address, transferEvents)
-
-
     const createdOrder = useSelector(
         state => get(state, 'loadEventsReducer.investorOpenedEvent', [])
     )
@@ -85,6 +78,7 @@ const InvestorDashboard=()=>{
     console.log(address)
     console.log(createdOrder)
     console.log(openOrders)
+    console.log(contract)
 
    
     

@@ -79,7 +79,7 @@ export const checkWalletConnection = async(dispatch)=>{
 
 
 export const loadContract=async(web3, dispatch)=>{
-    const {ERC1400_JSON, ERC20_JSON, HTLC1400_JSON, HTLC20_JSON} = loadAbi(dispatch)
+    const {ERC1400_JSON, ERC20_JSON, HTLC1400_JSON, HTLC20_JSON} = loadAbi()
     const networkID = await web3.eth.net.getId()
 
 
@@ -89,11 +89,15 @@ export const loadContract=async(web3, dispatch)=>{
     const htlc1400ContractAddress = HTLC1400_JSON.networks[networkID].address
     const htlc20ContractAddress = HTLC20_JSON.networks[networkID].address
 
+    
+
     const erc1400contract = new web3.eth.Contract(ERC1400_JSON.abi, erc1400ContractAddress)
     const erc20contract = new web3.eth.Contract(ERC20_JSON.abi, erc20ContractAddress)
     const htlc20contract = new web3.eth.Contract(HTLC20_JSON.abi, htlc20ContractAddress)
     const htlc1400contract = new web3.eth.Contract(HTLC1400_JSON.abi, htlc1400ContractAddress)
     
+
+    await loadOrderStates(htlc1400contract, htlc20contract, dispatch)
     
     dispatch(loadERC1400ContractAction(erc1400contract))
     dispatch(loadERC20ContractAction(erc20contract))
@@ -110,7 +114,7 @@ export const loadContract=async(web3, dispatch)=>{
     dispatch(loadTokenSymbolAction(symbol))
     dispatch(loadTokenTotalSupplyAction(totalSupply))
 
-    await loadOrderStates(htlc1400contract, htlc20contract, dispatch)
+    
     
 
     return { erc1400contract, erc20contract, htlc20contract, htlc1400contract }

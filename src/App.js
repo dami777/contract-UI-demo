@@ -36,11 +36,13 @@ function App() {
 
   
 
-  useEffect(()=>{
+  /*useEffect(()=>{
 
-    loadData()
+    async()=> await loadData()
     
-  }, [])
+  })*/
+
+  loadData()
 
  
 
